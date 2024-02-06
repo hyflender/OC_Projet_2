@@ -18,21 +18,21 @@ bs4 (BeautifulSoup)
 
 1. Clonez le dépôt :
 
-- 'git clone https://github.com/hyflender/OC_Projet_2.git'
-- 'cd OC_Projet_2'
+- `git clone https://github.com/hyflender/OC_Projet_2.git`
+- `cd OC_Projet_2`
 
 2. Initialiser votre environnement virtuel :
 
-- 'py -m venv env'
-- 'py env/Scripts/Activate'
+- `py -m venv env`
+- `py env/Scripts/Activate`
 
 3. Installez les dépendances :
 
-'pip install -r requirements.txt'
+`pip install -r requirements.txt`
 
 4. Exécutez le script principal :
 
-'python main.py'
+`python main.py`
 
 ## Fonctionnalités
 
