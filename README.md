@@ -18,8 +18,8 @@ bs4 (BeautifulSoup)
 
 1. Clonez le dépôt :
 
-git clone https://github.com/hyflender/OC-Projet-2.git
-cd OC-Project-2
+git clone https://github.com/hyflender/OC_Projet_2.git
+cd OC_Projet_2
 
 2. Installez les dépendances :
 
