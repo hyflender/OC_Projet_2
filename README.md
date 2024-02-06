@@ -28,11 +28,11 @@ bs4 (BeautifulSoup)
 
 3. Installez les dépendances :
 
-`pip install -r requirements.txt`
+- `pip install -r requirements.txt`
 
 4. Exécutez le script principal :
 
-`python main.py`
+- `python main.py`
 
 ## Fonctionnalités
 
