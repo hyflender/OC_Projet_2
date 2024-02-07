@@ -1,6 +1,7 @@
 import requests
 import csv
 import os
+import re
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from concurrent.futures import ThreadPoolExecutor
@@ -81,6 +82,7 @@ def get_all_books_in_category(category_urls):
 def book_info(url):
     # Récupération de la réponse par requests GET
     response = requests.get(url)
+    response.encoding = "utf-8"
 
     # BS va récupérer les informations de response et les stocks dans un object "soup"
     soup = BeautifulSoup(response.text, "html.parser")
@@ -103,6 +105,14 @@ def book_info(url):
         except AttributeError:
             return "Information non présente"
 
+    # Extraction du nombre de livres disponibles sinon dire Rupture
+    availability_text = get_text(soup, 'th:-soup-contains("Availability") + td')
+    match = re.search(r"\d+", availability_text)
+    if match:
+        availability = match.group()
+    else:
+        availability = "Rupture"
+
     # Définition des variables pour chaque informations nécessaires
     book_info = {
         "URL de la page du produit": url,
@@ -110,7 +120,7 @@ def book_info(url):
         "Titre": get_text(soup, "div.product_main h1"),
         "Prix TTC": get_text(soup, 'th:-soup-contains("Price (incl. tax)") + td'),
         "Prix HT": get_text(soup, 'th:-soup-contains("Price (excl. tax)") + td'),
-        "Nombre disponible": get_text(soup, 'th:-soup-contains("Availability") + td'),
+        "Nombre disponible": availability,
         "Description du produit": get_text(soup, "#product_description + p"),
         "Catégorie": get_text(soup, "ul.breadcrumb li:nth-child(3)"),
         "Note d'évaluation": get_text(soup, "div.product_main p.star-rating", "class")[
