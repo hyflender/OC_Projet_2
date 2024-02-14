@@ -75,22 +75,15 @@ def save_picture(books_info):
         # Téléchargement et sauvegarde de l'image de chaque livre
         for book_info in books_info:
             image_url = book_info.get("Image URL")
-            image_title = book_info.get("Title")
+            image_title = book_info.get("Image Title")
             category = book_info.get("Category")
-            
+
             # Vérification de l'existence des dossiers
             create_directory(category)
 
             if image_url:
                 # Nomination de la sous catégorie
                 image_folder = os.path.join("downloads", category, "images")
-
-                # Ajout d'un nom de fichier sécurisé (élimination de caractères non autorisés)
-                image_title = "".join(
-                    c if c.isalnum() or c in [" ", "-", "_"] else ""
-                    for c in image_title
-                )
-                image_title += ".jpg"
 
                 image_filename = os.path.join(image_folder, image_title)
                 try:
