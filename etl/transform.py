@@ -36,7 +36,7 @@ def uppercase_upc(data):
 def secure_image_title(data):
     df = pd.DataFrame(data)
     df["Image Title"] = df["Title"].apply(
-        lambda x: x.replace(" ", "-").replace("/", "-") + ".jpeg"
+        lambda x: "".join(e for e in x if e.isalnum()) + ".jpeg"
     )
     return df.to_dict(orient="records")
 
@@ -45,5 +45,4 @@ def transform_data(data):
     data = secure_image_title(
         uppercase_upc(clear_availability(clear_price(clear_data(data))))
     )
-    print(data)
     return data
