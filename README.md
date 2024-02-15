@@ -12,6 +12,9 @@ Ce script Python utilise BeautifulSoup et requests pour extraire des information
 - Modules Python requis (installez-les via `pip install -r requirements.txt`) :
     - requests
     - bs4 (BeautifulSoup)
+    - pandas
+    - SQLAlchemy
+
 
 ## Installation
 
