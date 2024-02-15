@@ -10,18 +10,17 @@ Ce script Python utilise BeautifulSoup et requests pour extraire des information
 
 - Python 3.x
 - Modules Python requis (installez-les via `pip install -r requirements.txt`) :
+    - requests
+    - bs4 (BeautifulSoup)
 
-requests
-bs4 (BeautifulSoup)
-
-## Comment utiliser le script
+## Installation
 
 1. Clonez le dépôt :
 
 - `git clone https://github.com/hyflender/OC_Projet_2.git`
 - `cd OC_Projet_2`
 
-2. Initialiser votre environnement virtuel :
+2. Initialiser et activer votre environnement virtuel :
 
 - `py -m venv env`
 - `py env/Scripts/Activate`
@@ -36,17 +35,17 @@ bs4 (BeautifulSoup)
 
 ## Fonctionnalités
 
-- get_all_categories(url): Fonction pour récupérer les URLs de toutes les catégories du site.
-- get_all_books_in_category(category_urls): Fonction pour récupérer les informations de tous les livres dans chaque catégorie.
-- book_info(url): Fonction pour récupérer les détails d'un livre spécifique.
-- save_data(category, all_books_info): Fonction pour sauvegarder toutes les informations de tous les livres dans un fichier CSV.
-- save_picture(category, all_books_info): Fonction pour télécharger et sauvegarder les images de chaque livre.
+- **Extraction** : Récupération des URLs de toutes les catégories et des informations de tous les livres.
+- **Transformation** : Nettoyage et structuration des données extraites.
+- **Chargement** : Sauvegarde des informations dans des fichiers CSV et téléchargement des images des livres.
 
 ## Structure du projet
 
-- main.py: Script principal à exécuter.
-- requirements.txt: Liste des dépendances du projet.
-- downloads/: Dossier où les données CSV et les images sont sauvegardées.
+- `main.py` : Point d'entrée du script.
+- `requirements.txt` : Dépendances du projet.
+- `downloads/` : Dossier de sauvegarde des données CSV et des images.
+- `etl/` : Modules d'extraction, transformation, et chargement.
+- `utils/` : Fonctions utilitaires.
 
 ## Avertissement
 
