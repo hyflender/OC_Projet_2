@@ -3,7 +3,6 @@
 
 import pandas as pd
 from sqlalchemy import create_engine
-
 from log_config import configure_logger
 
 log = configure_logger("load")  # Chargement du logger
@@ -35,11 +34,11 @@ def save_data_to_csv(data, filename):
     :param data: Les données à enregistrer.
     :param filename: Le nom du fichier CSV.
     """
-    # Création d'un dataframe à partir des données
+    # Création d'un DataFrame à partir des données par Pandas
     df = pd.DataFrame(data)
 
     # Enregistrement des données dans un fichier CSV
-    df.to_csv(f"downloads/{filename}.csv", index=False, encoding="utf-8")
+    df.to_csv(f"downloads/{filename}.csv", index=True, encoding="utf-8", header=True)
 
     log.info(
         f"Les données ont été enregistrées avec succès dans le fichier {filename}.csv."
