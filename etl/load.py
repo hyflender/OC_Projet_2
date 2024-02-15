@@ -4,6 +4,10 @@
 import pandas as pd
 from sqlalchemy import create_engine
 
+from log_config import configure_logger
+
+log = configure_logger("Scraping")  # Chargement du logger
+
 
 def load_data_to_db(data, table_name, db_name):
     """
@@ -22,4 +26,4 @@ def load_data_to_db(data, table_name, db_name):
     # Chargement des données dans la base de données
     df.to_sql(table_name, engine, if_exists="append", index=False)
 
-    print("Les données ont été chargées avec succès dans la base de données SQLite.")
+    log.info("Les données ont été chargées avec succès dans la base de données SQLite.")

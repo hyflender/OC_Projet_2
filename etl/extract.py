@@ -1,9 +1,12 @@
 # Fichier extract.py pour extraire les informations demandées dans le cadre d'une Pipeline ETL
 
+from log_config import configure_logger
 from utils.requests_utils import get_request
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from concurrent.futures import ThreadPoolExecutor
+
+log = configure_logger("Scraping")  # Chargement du logger
 
 
 def get_all_categories(url="https://books.toscrape.com"):
@@ -22,14 +25,14 @@ def get_all_categories(url="https://books.toscrape.com"):
 
         return category_urls
     except Exception as e:
-        print(f"Une erreur s'est produite lors de l'extraction des catégories : {e}")
+        log.critical(f"Une erreur s'est produite lors de l'extraction des catégories : {e}")
 
 
 def get_all_books_in_categories(category_urls):
     all_books_urls = []  # Table pour stocker les données
 
     def fetch_books(url):
-        print(
+        log.info(
             f"Analyse et récupérations des URLs des livres de la catégorie - URL : {url}"
         )
         while url:  # boucle pour les pages suivantes
@@ -54,7 +57,7 @@ def get_all_books_in_categories(category_urls):
                     url = None
 
             except Exception as e:
-                print(
+                log.critical(
                     f"Erreur lors de la récupération des livres dans la catégorie. Détails : {e}"
                 )
                 url = None
@@ -70,7 +73,7 @@ def get_book_info(url):
     all_books_infos = []  # Table pour stocker les données
 
     def fetch_books(url):
-        print(f" Récupération des informations du livre - url : {url}")
+        log.info(f" Récupération des informations du livre - url : {url}")
         response = get_request(url)
         soup = BeautifulSoup(response.text, "html.parser")
 
