@@ -4,6 +4,7 @@
 import os
 import csv
 from utils.requests_utils import get_image
+from concurrent.futures import ThreadPoolExecutor
 
 
 def create_directory(category):
@@ -73,7 +74,7 @@ def write_to_csv(books_infos):
 def save_picture(books_info):
     try:
         # Téléchargement et sauvegarde de l'image de chaque livre
-        for book_info in books_info:
+        def fetch_books(book_info):
             image_url = book_info.get("Image URL")
             image_title = book_info.get("Image Title")
             category = book_info.get("Category")
@@ -91,9 +92,15 @@ def save_picture(books_info):
 
                     with open(image_filename, mode="wb") as f:
                         f.write(response.content)
+                        print(f"L'image {image_filename} a été enregistrée avec succès")
                 except Exception as e:
                     print(
                         f"Erreur lors du téléchargement de l'image pour {book_info.get('Title')}. Détails : {e}"
                     )
+
+        # Multithreading pour accélerer le processus de scraping équivalent au nombre de coeur processeur
+        with ThreadPoolExecutor(max_workers=6) as executor:
+            executor.map(fetch_books, books_info)
+
     except Exception as e:
         print(f"Une erreur est survenue : {e}")
