@@ -5,7 +5,7 @@ from requests.exceptions import RequestException
 
 from log_config import configure_logger
 
-log = configure_logger("Scraping")  # Chargement du logger
+log = configure_logger("requests_utils")  # Chargement du logger
 
 def get_request(url):
     # Envoie une requête GET à l'URL spécifiée et renvoie la réponse.

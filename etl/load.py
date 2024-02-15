@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 
 from log_config import configure_logger
 
-log = configure_logger("Scraping")  # Chargement du logger
+log = configure_logger("load")  # Chargement du logger
 
 
 def load_data_to_db(data, table_name, db_name):
@@ -24,6 +24,23 @@ def load_data_to_db(data, table_name, db_name):
     engine = create_engine(f"sqlite:///{db_name}.db")
 
     # Chargement des données dans la base de données
-    df.to_sql(table_name, engine, if_exists="append", index=False)
+    df.to_sql(table_name, engine, if_exists="replace", index=False)
 
     log.info("Les données ont été chargées avec succès dans la base de données SQLite.")
+
+
+def save_data_to_csv(data, filename):
+    """
+    Cette fonction enregistre les données dans un fichier CSV.
+    :param data: Les données à enregistrer.
+    :param filename: Le nom du fichier CSV.
+    """
+    # Création d'un dataframe à partir des données
+    df = pd.DataFrame(data)
+
+    # Enregistrement des données dans un fichier CSV
+    df.to_csv(f"downloads/{filename}.csv", index=False, encoding="utf-8")
+
+    log.info(
+        f"Les données ont été enregistrées avec succès dans le fichier {filename}.csv."
+    )

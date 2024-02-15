@@ -7,7 +7,8 @@ from log_config import configure_logger
 from utils.requests_utils import get_image
 from concurrent.futures import ThreadPoolExecutor
 
-log = configure_logger("Scraping")  # Chargement du logger
+log = configure_logger("file_utils")  # Chargement du logger
+
 
 def create_directory(category):
     try:
@@ -94,7 +95,9 @@ def save_picture(books_info):
 
                     with open(image_filename, mode="wb") as f:
                         f.write(response.content)
-                        log.info(f"L'image {image_filename} a été enregistrée avec succès")
+                        log.info(
+                            f"L'image {image_filename} a été enregistrée avec succès"
+                        )
                 except Exception as e:
                     log.critical(
                         f"Erreur lors du téléchargement de l'image pour {book_info.get('Title')}. Détails : {e}"

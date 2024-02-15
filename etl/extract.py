@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from concurrent.futures import ThreadPoolExecutor
 
-log = configure_logger("Scraping")  # Chargement du logger
+log = configure_logger("extract")  # Chargement du logger
 
 
 def get_all_categories(url="https://books.toscrape.com"):
@@ -25,7 +25,9 @@ def get_all_categories(url="https://books.toscrape.com"):
 
         return category_urls
     except Exception as e:
-        log.critical(f"Une erreur s'est produite lors de l'extraction des catégories : {e}")
+        log.critical(
+            f"Une erreur s'est produite lors de l'extraction des catégories : {e}"
+        )
 
 
 def get_all_books_in_categories(category_urls):
@@ -73,37 +75,49 @@ def get_book_info(url):
     all_books_infos = []  # Table pour stocker les données
 
     def fetch_books(url):
-        log.info(f" Récupération des informations du livre - url : {url}")
-        response = get_request(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        try:
+            log.info(f" Récupération des informations du livre - url : {url}")
+            response = get_request(url)
+            if response:
+                soup = BeautifulSoup(response.text, "html.parser")
 
-        # Definition of variables for each necessary information
-        book_info = {
-            "Product page URL": url,
-            "Universal Product Code": soup.select_one(
-                'th:-soup-contains("UPC") + td'
-            ).text.strip(),
-            "Title": soup.select_one("div.product_main h1").text.strip(),
-            "Price incl. tax": soup.select_one(
-                'th:-soup-contains("Price (incl. tax)") + td'
-            ).text.strip(),
-            "Price excl. tax": soup.select_one(
-                'th:-soup-contains("Price (excl. tax)") + td'
-            ).text.strip(),
-            "Availability": soup.select_one(
-                'th:-soup-contains("Availability") + td'
-            ).text.strip(),
-            "Product Description": soup.select_one(
-                "#product_description + p"
-            ).text.strip(),
-            "Category": soup.select_one("ul.breadcrumb li:nth-child(3)").text.strip(),
-            "Rating": soup.select_one("div.product_main p.star-rating")["class"][1],
-            "Image URL": urljoin(
-                "https://books.toscrape.com/",
-                soup.select_one("div.item.active img")["src"],
-            ),
-        }
-        all_books_infos.append(book_info)
+                # Définition des variables pour chaque information nécessaire
+                book_info = {
+                    "Product page URL": url,
+                    "Universal Product Code": soup.select_one(
+                        'th:-soup-contains("UPC") + td'
+                    ).text.strip(),
+                    "Title": soup.select_one("div.product_main h1").text.strip(),
+                    "Price incl. tax": soup.select_one(
+                        'th:-soup-contains("Price (incl. tax)") + td'
+                    ).text.strip(),
+                    "Price excl. tax": soup.select_one(
+                        'th:-soup-contains("Price (excl. tax)") + td'
+                    ).text.strip(),
+                    "Availability": soup.select_one(
+                        'th:-soup-contains("Availability") + td'
+                    ).text.strip(),
+                    "Product Description": (
+                        soup.select_one("#product_description + p").text.strip()
+                        if soup.select_one("#product_description + p")
+                        else None
+                    ),
+                    "Category": soup.select_one(
+                        "ul.breadcrumb li:nth-child(3)"
+                    ).text.strip(),
+                    "Rating": soup.select_one("div.product_main p.star-rating")[
+                        "class"
+                    ][1],
+                    "Image URL": urljoin(
+                        "https://books.toscrape.com/",
+                        soup.select_one("div.item.active img")["src"],
+                    ),
+                }
+                all_books_infos.append(book_info)
+        except Exception as e:
+            log.error(
+                f"Erreur lors de la récupération des informations du livre {url}. Détails : {e}"
+            )
 
     # Multithreading pour accélerer le processus de scraping équivalent au nombre de coeur processeur
     with ThreadPoolExecutor(max_workers=6) as executor:
