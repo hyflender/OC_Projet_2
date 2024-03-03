@@ -33,8 +33,10 @@ Ce script Python utilise BeautifulSoup et requests pour extraire des information
 
 1. Clonez le dépôt :
 
-- `git clone https://github.com/hyflender/OC_Projet_2.git`
-- `cd OC_Projet_2`
+```bash
+git clone https://github.com/hyflender/OC_Projet_2.git
+cd OC_Projet_2
+```
 
 2. Initialiser et activer votre environnement virtuel :
 
