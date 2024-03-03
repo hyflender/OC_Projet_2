@@ -1,6 +1,19 @@
-![](https://scrape-it.cloud/assets/cache_image/assets/blog_img/web-scraping-with-python_1280x533_301.webp)
+<div align="center" id="top"> 
+<img alt="Logo" src="https://scrape-it.cloud/assets/cache_image/assets/blog_img/web-scraping-with-python_1280x533_301.webp">
+</div>
 
-Projet n°2 de OpenClassRoom Anthony PIAUGEARD
+<h1 align="center">Projet n°2 de OpenClassRoom Anthony PIAUGEARD</h1>
+
+<p align="center">
+  <img alt="Github top language" src="https://img.shields.io/github/languages/top/hyflender/OC_Projet_2?color=56BEB8">
+
+  <img alt="Github language count" src="https://img.shields.io/github/languages/count/hyflender/OC_Projet_2?color=56BEB8">
+
+  <img alt="Repository size" src="https://img.shields.io/github/repo-size/hyflender/OC_Projet_2?color=56BEB8">
+
+  <img alt="License" src="https://img.shields.io/github/license/hyflender/OC_Projet_2?color=56BEB8">
+
+</p>
 
 # Scraping de livres
 
@@ -25,15 +38,18 @@ Ce script Python utilise BeautifulSoup et requests pour extraire des information
 
 2. Initialiser et activer votre environnement virtuel :
 
-### Windows Powershell :
+- Windows Powershell :
 
+```powershell
 py -m venv env
 py ./env/Scripts/Activate
+```
 
-### Linux/macOS :
-
+- Linux/macOS :
+```bash
 python3 -m venv env
 source env/bin/activate
+```
 
 3. Installez les dépendances :
 
