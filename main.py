@@ -10,7 +10,7 @@ def main():
     try:
         category_urls = extract.get_all_categories("https://books.toscrape.com/")
         log.info(f"Il y a {len(category_urls)} catégories de livres sur le site")
-    except Exception as e:
+    except Exception as e: 
         log.critical(
             f"Une erreur s'est produite lors de l'extraction des catégories : {e}"
         )
