@@ -25,12 +25,12 @@ Ce script Python utilise BeautifulSoup et requests pour extraire des information
 
 2. Initialiser et activer votre environnement virtuel :
 
-# Windows Powershell :
+### Windows Powershell :
 
 py -m venv env
 py ./env/Scripts/Activate
 
-# Linux/macOS :
+### Linux/macOS :
 
 python3 -m venv env
 source env/bin/activate
