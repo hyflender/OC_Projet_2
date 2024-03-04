@@ -1,5 +1,5 @@
 from etl import extract, transform, load
-from utils import file_utils, requests_utils
+from utils import file_utils
 from log_config import configure_logger
 
 log = configure_logger("main")  # Chargement du log
