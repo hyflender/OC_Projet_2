@@ -7,7 +7,7 @@ def configure_logger(name):
         logger.setLevel(logging.INFO)
 
         # Gestionnaire de fichier
-        file_handler = logging.FileHandler("debug.log")
+        file_handler = logging.FileHandler("debug.log", encoding="utf-8")
         formatter = logging.Formatter(
             "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
         )
