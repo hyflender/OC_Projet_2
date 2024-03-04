@@ -44,7 +44,7 @@ cd OC_Projet_2
 
 ```powershell
 py -m venv env
-py ./env/Scripts/Activate
+./env/Scripts/Activate
 ```
 
 - Linux/macOS :

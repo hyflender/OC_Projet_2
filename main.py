@@ -3,21 +3,25 @@ from utils import file_utils, requests_utils
 from log_config import configure_logger
 
 log = configure_logger("main")  # Chargement du log
-test_cat = {'https://books.toscrape.com/catalogue/category/books/travel_2/index.html', 'https://books.toscrape.com/catalogue/category/books/mystery_3/index.html'}
+test = {
+    "https://books.toscrape.com/catalogue/category/books/travel_2/index.html",
+    "https://books.toscrape.com/catalogue/category/books/mystery_3/index.html",
+}
+
 
 def main():
     # Extraction des URLs de toutes les catégories
     try:
         category_urls = extract.get_all_categories("https://books.toscrape.com/")
         log.info(f"Il y a {len(category_urls)} catégories de livres sur le site")
-    except Exception as e: 
+    except Exception as e:
         log.critical(
             f"Une erreur s'est produite lors de l'extraction des catégories : {e}"
         )
 
     # Extraction des URLs de tous les livres pour chaque catégorie
     try:
-        books_urls = extract.get_all_books_in_categories(test_cat)
+        books_urls = extract.get_all_books_in_categories(category_urls)
         log.info(f"Il y a {len(books_urls)} livres à extraire")
     except Exception as e:
         log.critical(f"Une erreur s'est produite lors de l'extraction des livres : {e}")

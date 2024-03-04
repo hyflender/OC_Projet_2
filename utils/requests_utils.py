@@ -7,6 +7,7 @@ from log_config import configure_logger
 
 log = configure_logger("requests_utils")  # Chargement du logger
 
+
 def get_request(url):
     # Envoie une requête GET à l'URL spécifiée et renvoie la réponse.
     try:
@@ -26,5 +27,7 @@ def get_image(url):
         response.raise_for_status()
         return response
     except requests.exceptions.RequestException as e:
-        log.critical(f"Une erreur s'est produite lors de la récupération de l'image : {e}")
+        log.critical(
+            f"Une erreur s'est produite lors de la récupération de l'image : {e}"
+        )
         return None
