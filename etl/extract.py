@@ -1,45 +1,66 @@
 # Fichier extract.py pour extraire les informations demandées dans le cadre d'une Pipeline ETL
 
-from log_config import configure_logger
+from utils.log_config import configure_logger
 from utils.requests_utils import get_request
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from concurrent.futures import ThreadPoolExecutor
 
-log = configure_logger("extract")  # Chargement du logger
 
+class Extract:
+    """
+    Classe Extractor en POO
 
-def get_all_categories(url="https://books.toscrape.com"):
-    try:
-        # Appel de la fonction get_request() du fichier requests_utils
-        response = get_request(url)
+    Modules :
 
-        # Utilisation de html.parser pour le parsing HTML
-        soup = BeautifulSoup(response.text, "html.parser")
+    Constructeur : __init__(self, url="https://books.toscrape.com") : Constructeur de la class
+    get_all_categories(self) : Extract toutes les catégories du site "https://books.toscrape.com"
+    get_all_books_in_categories(self, category_urls) : Extracte tout les livres présent dans la "category_url"
+    get_book_info(self, url) : Extract les informations du livre "url"
 
-        # Récupération des liens de toutes les catégories dans la navigation avec la classe "nav-list" par méthode css-selector
-        category_links = soup.select("ul.nav.nav-list ul li a")
+    """
 
-        # Mise en forme des URLs par urljoin
-        category_urls = [urljoin(url, link["href"]) for link in category_links]
+    def __init__(self, site_url="https://books.toscrape.com") -> None:
+        self.site_url = site_url
+        self.log = configure_logger("extract")  # Configuration du logger
 
+    def get_all_category(self):
+        category_urls = []
+        try:
+            # Appel de la fonction get_request() du fichier requests_utils
+            response = get_request(self.site_url)
+            if response:
+                # Utilisation de html.parser pour le parsing HTML
+                soup = BeautifulSoup(response.text, "html.parser")
+
+                # Récupération des liens de toutes les catégories dans la navigation avec la classe "nav-list" par méthode css-selector
+                category_links = soup.select("ul.nav.nav-list ul li a")
+
+                # Mise en forme des URLs par urljoin
+                category_urls = [
+                    urljoin(self.site_url, link["href"]) for link in category_links
+                ]
+                self.log.info(f"Il y a {len(category_urls)} catégories à scrapper")
+
+        except Exception as e:
+            self.log.critical(
+                f"Une erreur s'est produite lors de l'extraction des catégories : {e}"
+            )
         return category_urls
-    except Exception as e:
-        log.critical(
-            f"Une erreur s'est produite lors de l'extraction des catégories : {e}"
+
+    def get_all_books_in_category(self, category_url):
+        self.category_url = category_url
+
+        all_books_urls = (
+            []
+        )  # Table pour stocker les liens de tous les livres dans la catégorie
+
+        self.log.info(
+            f"Analyse et récupérations des URLs des livres de la catégorie - URL : {self.category_url}"
         )
-
-
-def get_all_books_in_categories(category_urls):
-    all_books_urls = []  # Table pour stocker les données
-
-    def fetch_books(url):
-        log.info(
-            f"Analyse et récupérations des URLs des livres de la catégorie - URL : {url}"
-        )
-        while url:  # boucle pour les pages suivantes
+        while self.category_url:  # boucle pour les pages suivantes
             try:
-                response = get_request(url)
+                response = get_request(self.category_url)
                 soup = BeautifulSoup(response.text, "html.parser")
 
                 book_links = soup.select(
@@ -47,43 +68,41 @@ def get_all_books_in_categories(category_urls):
                 )  # Récupération de tous les liens des livres présents dans la catégorie
 
                 for link in book_links:
-                    book_url = urljoin(url, link["href"])
+                    book_url = urljoin(self.category_url, link["href"])
                     all_books_urls.append(book_url)
 
                 # Recherche de pages suivante
                 next_link = soup.find("li", class_="next")
 
                 if next_link:
-                    url = urljoin(url, next_link.find("a")["href"])
+                    self.category_url = urljoin(
+                        self.category_url, next_link.find("a")["href"]
+                    )
                 else:
-                    url = None
+                    self.category_url = None
 
             except Exception as e:
-                log.critical(
+                self.log.critical(
                     f"Erreur lors de la récupération des livres dans la catégorie. Détails : {e}"
                 )
-                url = None
+                break
 
-    # Multithreading pour accélerer le processus de scraping équivalent au nombre de coeur processeur
-    with ThreadPoolExecutor(max_workers=6) as executor:
-        executor.map(fetch_books, category_urls)
+        return all_books_urls
 
-    return all_books_urls
+    def get_book_info(self, book_url):
+        self.book_url = book_url
 
-
-def get_book_info(url):
-    all_books_infos = []  # Table pour stocker les données
-
-    def fetch_books(url):
         try:
-            log.info(f" Récupération des informations du livre - url : {url}")
-            response = get_request(url)
+            self.log.info(
+                f" Récupération des informations du livre - url : {self.book_url}"
+            )
+            response = get_request(self.book_url)
             if response:
                 soup = BeautifulSoup(response.text, "html.parser")
 
                 # Définition des variables pour chaque information nécessaire
-                book_info = {
-                    "Product page URL": url,
+                book_infos = {
+                    "Product page URL": self.book_url,
                     "Universal Product Code": soup.select_one(
                         'th:-soup-contains("UPC") + td'
                     ).text.strip(),
@@ -113,13 +132,9 @@ def get_book_info(url):
                         soup.select_one("div.item.active img")["src"],
                     ),
                 }
-                all_books_infos.append(book_info)
         except Exception as e:
-            log.error(
-                f"Erreur lors de la récupération des informations du livre {url}. Détails : {e}"
+            self.log.error(
+                f"Erreur lors de la récupération des informations du livre {self.book_url}. Détails : {e}"
             )
 
-    # Multithreading pour accélerer le processus de scraping équivalent au nombre de coeur processeur
-    with ThreadPoolExecutor(max_workers=6) as executor:
-        executor.map(fetch_books, url)
-    return all_books_infos
+        return book_infos

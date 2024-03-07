@@ -1,67 +1,36 @@
 from etl import extract, transform, load
-from utils import file_utils
-from log_config import configure_logger
+from utils.log_config import configure_logger
 
-log = configure_logger("main")  # Chargement du log
-test = {
-    "https://books.toscrape.com/catalogue/category/books/travel_2/index.html",
-    "https://books.toscrape.com/catalogue/category/books/mystery_3/index.html",
-}
+log = configure_logger("main")  # Configuration du logger
 
 
-def main():
-    # Extraction des URLs de toutes les catégories
-    try:
-        category_urls = extract.get_all_categories("https://books.toscrape.com/")
-        log.info(f"Il y a {len(category_urls)} catégories de livres sur le site")
-    except Exception as e:
-        log.critical(
-            f"Une erreur s'est produite lors de l'extraction des catégories : {e}"
-        )
 
-    # Extraction des URLs de tous les livres pour chaque catégorie
-    try:
-        books_urls = extract.get_all_books_in_categories(category_urls)
-        log.info(f"Il y a {len(books_urls)} livres à extraire")
-    except Exception as e:
-        log.critical(f"Une erreur s'est produite lors de l'extraction des livres : {e}")
+class ETLProcess:
+    def __init__(self, extractor, transformer):
+        self.extractor = extractor
+        self.transformer = transformer
+        # self.loader = loader
 
-    # Extractions des données de chaque livres stockés dans books_urls
-    try:
-        data = extract.get_book_info(books_urls)
-        log.info(f"Il y a {len(data)} livres analysés")
-    except Exception as e:
-        log.critical(f"Une erreur s'est produite lors de l'analyse des livres : {e}")
-
-    # Transformation
-    try:
-        log.info("Transformation des données")
-        transformed_data = transform.transform_data(data)
-    except Exception as e:
-        log.critical(
-            f"Une erreur s'est produite lors de la transformation des données : {e}"
-        )
-
-    # Load
-    try:
-        file_utils.write_to_csv(transformed_data)
-        file_utils.save_picture(transformed_data)
-        load.save_data_to_csv(transformed_data, "books")
-
-    except Exception as e:
-        log.critical(
-            f"Une erreur s'est produite lors de l'écriture des données dans le fichier CSV : {e}"
-        )
-
-    try:
-        load.load_data_to_db(
-            transformed_data, "books", "sqlite"
-        )  # Load Data in Sqlite Data Base
-    except Exception as e:
-        log.critical(
-            f"Une erreur s'est produite lors de la création de la DataBase : {e}"
-        )
+    def execute_etl(self):
+        category_urls = self.extractor.get_all_category()
+        all_books_data = []
+        for category_url in category_urls[:1]:
+            books_urls = self.extractor.get_all_books_in_category(category_url)
+            for book_url in books_urls:
+                book_info = self.extractor.get_book_info(book_url)
+                all_books_data.append(book_info)
+        print(all_books_data)
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        extractor = extract.Extract(site_url="https://books.toscrape.com")
+        transformer = transform.Transform()
+
+        print(test)
+
+        # etl_process = ETLProcess(extractor, transformer)
+        # etl_process.execute_etl()
+
+    except Exception as e:
+        print(f"Erreur : {e}")

@@ -3,7 +3,7 @@
 import requests
 from requests.exceptions import RequestException
 
-from log_config import configure_logger
+from utils.log_config import configure_logger
 
 log = configure_logger("requests_utils")  # Chargement du logger
 
@@ -24,8 +24,9 @@ def get_request(url):
 def get_image(url):
     try:
         response = requests.get(url)
-        response.raise_for_status()
+        response.raise_for_status()  # Vérifie que la requête a réussi
         return response
+
     except requests.exceptions.RequestException as e:
         log.critical(
             f"Une erreur s'est produite lors de la récupération de l'image : {e}"

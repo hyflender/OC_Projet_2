@@ -3,7 +3,7 @@
 
 import os
 import csv
-from log_config import configure_logger
+from utils.log_config import configure_logger
 from utils.requests_utils import get_image
 from concurrent.futures import ThreadPoolExecutor
 
